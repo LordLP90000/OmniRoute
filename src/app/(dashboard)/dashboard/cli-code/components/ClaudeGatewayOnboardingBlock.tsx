@@ -20,7 +20,8 @@ export default function ClaudeGatewayOnboardingBlock({ baseUrl }: { baseUrl: str
 
   const snippet = buildClaudeDiscoverySettingsSnippet({
     baseUrl,
-    apiKeyPlaceholder: t("ccOnboardingKeyPlaceholder"),
+    // t.raw: the message is a literal "<...>" placeholder, which t() rejects as a rich-text tag.
+    apiKeyPlaceholder: t.raw("ccOnboardingKeyPlaceholder") as string,
   });
 
   const handleCopy = async () => {
