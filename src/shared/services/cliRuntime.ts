@@ -321,6 +321,17 @@ const CLI_TOOLS: Record<string, any> = {
       config: ".config/crush/crush.json",
     },
   },
+  // UI catalog entry exists since plan 14; without this runtime entry the
+  // detector had no command candidates and always reported "not installed".
+  "agent-deck": {
+    defaultCommand: "agent-deck",
+    envBinKey: "CLI_AGENT_DECK_BIN",
+    requiresBinary: true,
+    healthcheckTimeoutMs: 8000,
+    paths: {
+      config: ".config/agent-deck/config.toml",
+    },
+  },
 };
 
 /**
