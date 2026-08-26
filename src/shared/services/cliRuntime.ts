@@ -321,6 +321,17 @@ const CLI_TOOLS: Record<string, any> = {
       config: ".config/crush/crush.json",
     },
   },
+  // Agent Deck (asheshgoplani/agent-deck) — Go binary; config lives at
+  // $XDG_CONFIG_HOME/agent-deck/config.toml (default ~/.config/agent-deck/config.toml).
+  "agent-deck": {
+    defaultCommand: "agent-deck",
+    envBinKey: "CLI_AGENT_DECK_BIN",
+    requiresBinary: true,
+    healthcheckTimeoutMs: 8000,
+    paths: {
+      config: ".config/agent-deck/config.toml",
+    },
+  },
 };
 
 /**
