@@ -199,7 +199,7 @@ describe("EndpointPageClient", () => {
       if (path === "/api/settings") {
         return Promise.resolve(
           jsonResponse({
-            cloudEnabled: false,
+            cloudEnabled: true,
             cloudConfigured: false,
             hideEndpointCloudflaredTunnel: true,
             hideEndpointTailscaleFunnel: true,
