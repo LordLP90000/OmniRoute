@@ -1,13 +1,7 @@
 import { getRuntimePorts } from "@/lib/runtime/ports";
 
 export type TunnelPhase =
-  | "unsupported"
-  | "not_installed"
-  | "stopped"
-  | "needs_auth"
-  | "starting"
-  | "running"
-  | "error";
+  "unsupported" | "not_installed" | "stopped" | "needs_auth" | "starting" | "running" | "error";
 
 export type NgrokTunnelStatus = {
   supported: boolean;
@@ -34,6 +28,35 @@ function getLocalTargetUrl() {
 
 function getTunnelApiUrl(publicUrl: string | null) {
   return publicUrl ? `${publicUrl.replace(/\/$/, "")}/v1` : null;
+}
+
+/** Parse NGROK_BASIC_AUTH ("user1:pass1,user2:pass2") into user:pass pairs. */
+export function parseBasicAuthPairs(raw: string | undefined | null): string[] {
+  if (!raw || raw.trim() === "") return [];
+  return raw
+    .split(",")
+    .map((pair) => pair.trim())
+    .filter((pair) => {
+      const idx = pair.indexOf(":");
+      return idx > 0 && idx < pair.length - 1;
+    });
+}
+
+/** Build an ngrok Traffic Policy JSON enforcing HTTP basic auth for the given pairs. */
+export function buildBasicAuthTrafficPolicy(pairs: string[]): string | null {
+  if (pairs.length === 0) return null;
+  return JSON.stringify({
+    on_http_request: [
+      {
+        actions: [
+          {
+            type: "basic-auth",
+            config: { credentials: pairs },
+          },
+        ],
+      },
+    ],
+  });
 }
 
 export async function getNgrokTunnelStatus(): Promise<NgrokTunnelStatus> {
@@ -94,6 +117,13 @@ export async function startNgrokTunnel(inputAuthToken?: string): Promise<NgrokTu
         listenerOptions.authtoken_from_env = true;
       } else {
         listenerOptions.authtoken = authToken;
+      }
+
+      const basicAuthPolicy = buildBasicAuthTrafficPolicy(
+        parseBasicAuthPairs(process.env.NGROK_BASIC_AUTH)
+      );
+      if (basicAuthPolicy) {
+        listenerOptions.traffic_policy = basicAuthPolicy;
       }
 
       const listener = await ngrok.forward(listenerOptions);
