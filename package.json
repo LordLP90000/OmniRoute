@@ -433,7 +433,10 @@
     "@parcel/watcher": true,
     "keytar": true,
     "protobufjs": true,
-    "unrs-resolver": true
+    "unrs-resolver": true,
+    "tls-client-node@0.2.0": true,
+    "onnxruntime-node@1.27.0": true,
+    "koffi@2.16.1": true
   },
   "overrides": {
     "onnxruntime-node": "1.27.0",
